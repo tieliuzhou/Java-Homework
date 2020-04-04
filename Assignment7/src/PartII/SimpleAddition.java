@@ -1,5 +1,7 @@
 package PartII;
 
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -66,7 +68,7 @@ public class SimpleAddition extends JFrame {
         addend1Field = new JTextField(8);
         addend1Field.setLocation(0, 0);
         addend1Field.setSize(100, 30);
-        addend1Field.setText("5");
+        addend1Field.setText("0");
         panelForTextFields.add(addend1Field);
         
 
@@ -74,7 +76,7 @@ public class SimpleAddition extends JFrame {
         addend2Field = new JTextField(8);
         addend2Field.setLocation(0, 40);
         addend2Field.setSize(100, 30);
-        addend2Field.setText("6");
+        addend2Field.setText("0");
         panelForTextFields.add(addend2Field);
         
         sumField = new JLabel();
@@ -115,8 +117,22 @@ public class SimpleAddition extends JFrame {
          * Hint: the code that initializes the text of sumField can be executed again to update the value to reflect
          * the current value
          */
-        addend1Field.addActionListener(null);
-        addend2Field.addActionListener(null);
+        addend1Field.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String str1 = addend1Field.getText();
+                String str2 = addend2Field.getText();
+                sumField.setText(Double.toString( Double.parseDouble(str1) + Double.parseDouble(str2)));
+            }
+        });
+        addend2Field.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String str1 = addend1Field.getText();
+                String str2 = addend2Field.getText();
+                sumField.setText(Double.toString( Double.parseDouble(str1) + Double.parseDouble(str2)));
+            }
+        });
         
 
         totalGUI.add(titleLabel);
@@ -127,6 +143,7 @@ public class SimpleAddition extends JFrame {
         totalGUI.setOpaque(true);    
         return totalGUI;
     }
+
 
 
     public static void main(String[] args) {
