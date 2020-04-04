@@ -33,8 +33,8 @@ public class MaxFinder<T extends Number>{
   public static void main(String[] args){
     MaxFinder<Integer> m1 = new MaxFinder<Integer>();
     MaxFinder<Double> m2 = new MaxFinder<Double>();
-    Collection<Integer> a= new ArrayList<>(Arrays.asList(1,2,3,4,5));
-    Collection<Double> b = new ArrayList<>(Arrays.asList(1.5,2.5,3.5,4.5,5.5));
+    Collection<Integer> a= new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+    Collection<Double> b = new ArrayList<>(Arrays.asList(1.5, 2.5, 3.5, 4.5, 5.5));
     m1.add(a);
     m2.add(b);
     System.out.println("The Max Number in Collection of Integers is "+m1.max());
