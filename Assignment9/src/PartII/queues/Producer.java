@@ -1,4 +1,4 @@
-package queues;
+package PartII.queues;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

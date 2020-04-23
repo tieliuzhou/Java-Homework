@@ -43,7 +43,7 @@ public class CountDivisors {
 	
 	public static void main(String[] args) 
 	{
-		Entry<Long,Long> result = maxDivisors(1000, 2000);
+		Entry<Long,Long> result = maxDivisors(10000, 20000);
 		System.out.println("\n" + result);
 	}
 }
