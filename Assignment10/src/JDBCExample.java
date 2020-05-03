@@ -15,7 +15,7 @@ public class JDBCExample {
 
 	{
 
-		url = "jdbc:sqlite:javaclass.db";
+		url = "jdbc:sqlite:assignment.db";
 		try {
 
 			Connection connect = DriverManager.getConnection(url);
@@ -41,7 +41,7 @@ public class JDBCExample {
 			ResultSet result;
 
 			String s = "SELECT * FROM People";
-
+			//String s = "SELECT *";
 			result = stmt.executeQuery(s);
 
 			ResultSetMetaData rsmd = result.getMetaData(); 
