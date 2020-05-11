@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Midterm">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Midterm.zip!/" />
+      <root url="jar://$PROJECT_DIR$/MidtermSaturdaySection.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
