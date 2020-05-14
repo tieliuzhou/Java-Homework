@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
@@ -110,8 +111,8 @@ public class Server extends JFrame {
 							" at " + new Date() + '\n');
 
 					InetAddress inetAddress = socket.getInetAddress();
-					textQueryArea.append("Client " + clientNo + "'s host name is "
-							+ host + "\n");
+					/*textQueryArea.append("Client " + clientNo + "'s host name is "
+							+ host + "\n");*/
 					textQueryArea.append("Client " + clientNo + "'s host name is "
 							+ inetAddress.getHostName() + "\n");
 					textQueryArea.append("Client " + clientNo + "'s IP Address is "
@@ -176,25 +177,19 @@ public class Server extends JFrame {
 						outputToClient.flush();*/
 
 						outputStream.write(response.getBytes());
-					} catch (ClassNotFoundException e) {
+					} catch (ClassNotFoundException | SQLException e) {
 						e.printStackTrace();
 						String response = "Failed" + "\n";
 						/*outputToClient.writeObject(response);
 						outputToClient.flush();*/
 						outputStream.write(response.getBytes());
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-						String response = "Failed" + "\n";
-						/*outputToClient.writeObject(response);
-						outputToClient.flush();*/
-						outputStream.write(response.getBytes());
 					}
-				} catch (IOException e2){
+				} catch (IOException e1){
 					//If there are IO errors, in the Streams or the Sockets,
 					// assume there is some kind of network problem
 					// and exit the thread by having a using a “break”
 					// inside the while loop.
-					e2.printStackTrace();
+					e1.printStackTrace();
 					break;
 				}
 			}
