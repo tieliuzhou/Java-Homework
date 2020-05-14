@@ -1,0 +1,1100 @@
+Index: ../FinalProject/src/finalproject/client/ClientInterface.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package finalproject.client;\r\n\r\nimport java.io.ObjectInputStream;\r\nimport java.util.ArrayList;\r\nimport java.sql.*;\r\nimport java.util.Arrays;\r\nimport java.util.LinkedList;\r\nimport java.util.List;\r\nimport javax.swing.*;\r\n\r\nimport finalproject.client.ClientInterface.ComboBoxItem;\r\nimport finalproject.db.DBInterface;\r\nimport finalproject.entities.Person;\r\n\r\nimport java.awt.BorderLayout;\r\nimport java.awt.GridLayout;\r\nimport java.awt.event.ActionEvent;\r\nimport java.awt.event.ActionListener;\r\nimport java.io.BufferedReader;\r\nimport java.io.DataInputStream;\r\nimport java.io.IOException;\r\nimport java.io.InputStreamReader;\r\nimport java.io.ObjectOutputStream;\r\nimport java.net.Socket;\r\n\r\npublic class ClientInterface extends JFrame {\r\n\r\n\tprivate static final long serialVersionUID = 1L;\r\n\r\n\tpublic static final int DEFAULT_PORT = 8001;\r\n\t\r\n\tprivate static final int FRAME_WIDTH = 600;\r\n\tprivate static final int FRAME_HEIGHT = 400;\r\n\tfinal int AREA_ROWS = 10;\r\n\tfinal int AREA_COLUMNS = 52;\r\n\r\n\t//for UI\r\n\tprivate JPanel controlPanel;\r\n\tprivate JTextArea textQueryArea;\r\n\tprivate JScrollPane scrollPane;\r\n\tprivate JMenuBar menuBar;\r\n\tprivate JTextField dbName;\r\n\tprivate JTextField hostName;\r\n\r\n\tprivate JButton openConn;\r\n\tprivate JButton closeConn;\r\n\tprivate JButton sendData;\r\n\tprivate JButton queryDB;\r\n\r\n\t//for db\r\n\tprivate Connection conn;\r\n\tprivate PreparedStatement queryStmtAll;\r\n\tprivate PreparedStatement queryAvaliable;\r\n\tprivate PreparedStatement queryStmtPerson;\r\n\tprivate PreparedStatement updateStmt;\r\n\tprivate int numColumns;\r\n\tprivate String ColumnNames;\r\n\tprivate String spaceLine;\r\n\tprivate List<ComboBoxItem> ans;\r\n\r\n\tprivate JComboBox peopleSelect;\r\n\tprivate JFileChooser jFileChooser;\r\n\r\n\t// for socket\r\n\tprivate Socket socket;\r\n\tprivate int port;\r\n\tprivate String host;\r\n\tprivate ObjectOutputStream toServer;\r\n\tprivate ObjectInputStream fromServer;\r\n\tprivate BufferedReader br;\r\n\t\r\n\tpublic ClientInterface() {\r\n\t\tthis(DEFAULT_PORT);\r\n\t}\r\n\t\r\n\tpublic ClientInterface(int port) {\r\n\t\tthis.port = port;\r\n\t\tans = new ArrayList<>();\r\n\t\tthis.host = \"localhost\";\r\n\r\n\t\tjFileChooser = new JFileChooser(\".\");\r\n\t\tcreateControlPanel();\r\n\t\ttextQueryArea = new JTextArea(AREA_ROWS,AREA_COLUMNS);\r\n\t\ttextQueryArea.setEditable(false);\r\n\r\n\t\tscrollPane = new JScrollPane(textQueryArea);\r\n\t\t//JPanel textPanel = new JPanel();\r\n\t\t//textPanel.add(scrollPane);\r\n\r\n\t\tthis.setLayout(new GridLayout(2,1));\r\n\t\tthis.add(controlPanel);\r\n\t\t//this.add(textPanel);\r\n\t\tthis.add(scrollPane);\r\n\r\n\t\tqueryDB.addActionListener(new QueryButtonListener());\r\n\t\topenConn.addActionListener(new OCButtonListener());\r\n\t\tcloseConn.addActionListener((e) -> {\r\n\t\t\ttry{\r\n\t\t\t\tsocket.close();\r\n\t\t\t\thostName.setText(\"<None>\");\r\n\t\t\t} catch (Exception e1){\r\n\t\t\te1.printStackTrace();\r\n\t\t\t}\r\n\t\t});\r\n\t\tsendData.addActionListener(new SendButtonListener());\r\n\t}\r\n\r\n\tprivate JPanel createControlPanel() {\r\n\t\tcontrolPanel = new JPanel(new GridLayout(2,1));\r\n\t\tsetDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\r\n\t\tthis.setSize(FRAME_WIDTH,FRAME_HEIGHT);\r\n\t\tcreateMenus();\r\n\r\n\t\tJPanel northPanel = new JPanel(new GridLayout(3,1));\r\n\t\tJPanel centerPanel = new JPanel(new GridLayout(2,1));\r\n\r\n\t\tJPanel np1 = new JPanel();\r\n\t\tJLabel np1lb = new JLabel(\"Active DB: \");\r\n\t\tdbName = new JTextField(10);\r\n\t\tdbName.setText(\"<None>\");\r\n\t\tdbName.setEditable(false);\r\n\t\tnp1.add(np1lb);\r\n\t\tnp1.add(dbName);\r\n\t\tnorthPanel.add(np1);\r\n\r\n\t\tJPanel np2 = new JPanel();\r\n\t\tJLabel np2lb = new JLabel(\"Active Connection: \");\r\n\t\thostName = new JTextField(10);\r\n\t\thostName.setText(\"<None>\");\r\n\t\thostName.setEditable(false);\r\n\t\tnp2.add(np2lb);\r\n\t\tnp2.add(hostName);\r\n\t\tnorthPanel.add(np2);\r\n\r\n\t\tJPanel np3 = new JPanel();\r\n\t\tpeopleSelect = new JComboBox();\r\n\t\tpeopleSelect.addItem(\"<Empty>\");\r\n\t\tpeopleSelect.setEditable(false);\r\n\t\tnp3.add(peopleSelect);\r\n\t\tnorthPanel.add(np3);\r\n\t\t\r\n\t\tJPanel cp1 = new JPanel();\r\n\t\topenConn = new JButton(\"Open Connection\");\r\n\t\tcloseConn = new JButton(\"Close Connection\");\r\n\t\tcp1.add(openConn);\r\n\t\tcp1.add(closeConn);\r\n\t\tcenterPanel.add(cp1);\r\n\r\n\t\tJPanel cp2 = new JPanel();\r\n\t\tsendData = new JButton(\"Send Data\");\r\n\t\tqueryDB = new JButton(\"Query DB Data\");\r\n\t\tcp2.add(sendData);cp2.add(queryDB);\r\n\t\tcenterPanel.add(cp2);\r\n\t\t\r\n\r\n\t\tcontrolPanel.add(northPanel);\r\n\t\tcontrolPanel.add(centerPanel);\r\n\t\treturn controlPanel;\r\n\t}\r\n\r\n\tprivate void createMenus() {\r\n\t\tmenuBar = new JMenuBar();\r\n\t\tmenuBar.add(createFileMenu());\r\n\t\tthis.setJMenuBar(menuBar);\r\n\t}\r\n\r\n\tpublic JMenu createFileMenu() {\r\n      JMenu menu = new JMenu(\"File\");\r\n      menu.add(createFileOpenItem());\r\n      menu.add(createFileExitItem());\r\n      return menu;\r\n   }\r\n\r\n\tprivate JMenuItem createFileExitItem() {\r\n\t\tJMenuItem item = new JMenuItem(\"Exit\");\r\n\t\titem.addActionListener(e -> System.exit(0));\r\n\t\treturn item;\r\n\t}\r\n\r\n\r\n\tprivate void fillComboBox() throws SQLException {\r\n\t   List<ComboBoxItem> l = getNames();\r\n\t   peopleSelect.setModel(new DefaultComboBoxModel(l.toArray()));\r\n\t   if(l.isEmpty())\r\n\t   \tpeopleSelect.addItem(\"<Empty>\");\r\n   }\r\n   \r\n   private JMenuItem createFileOpenItem() {\r\n\t   JMenuItem item = new JMenuItem(\"Open DB\");\r\n\t   class OpenDBListener implements ActionListener {\r\n\t   \tpublic void actionPerformed(ActionEvent event) {\r\n\t   \t\tint returnVal = jFileChooser.showOpenDialog(getParent());\r\n\t   \t\tif (returnVal == JFileChooser.APPROVE_OPTION) {\r\n\t   \t\t\tSystem.out.println(\"You chose to open this file: \" + jFileChooser.getSelectedFile().getAbsolutePath());\r\n\t   \t\t\tString dbFileName = jFileChooser.getSelectedFile().getAbsolutePath();\r\n\t   \t\t\ttry {\r\n\t   \t\t\t\tconnectToDB(dbFileName);\r\n\t   \t\t\t\tdbName.setText(dbFileName.substring(dbFileName.lastIndexOf(\"\\\\\")+1));\r\n\t   \t\t\t\t/*queryButtonListener.setConnection(conn);*/\r\n\t\t\t\t\t\tclearComboBox();\r\n\t\t\t\t\t\tfillComboBox();\r\n\t   \t\t\t} catch (Exception e ) {\r\n\t   \t\t\t\tSystem.err.println(\"error connection to db: \"+ e.getMessage());\r\n\t   \t\t\t\te.printStackTrace();\r\n\t   \t\t\t\tdbName.setText(\"<None>\");\r\n\t\t\t\t\t\tclearComboBox();\r\n\t   \t\t\t}\r\n\t   \t\t\tfinally {\r\n\t\t\t\t\t\ttextQueryArea.setText(\"\");\r\n\t\t\t\t\t}\r\n\t   \t\t}\r\n\t   \t}\r\n\t   }\r\n\t   item.addActionListener(new OpenDBListener());\r\n\t   return item;\r\n   }\r\n\r\n\tprivate void clearComboBox() {\r\n\t\tpeopleSelect.removeAllItems();\r\n\t\tpeopleSelect.addItem(\"<Empty>\");\r\n\t}\r\n\r\n\tprivate void connectToDB(String dbFileName) {\r\n\t\ttry{\r\n\t\t\tString url = \"jdbc:sqlite:\"+dbFileName;\r\n\t\t\tconn = DriverManager.getConnection(url);\r\n\t\t\tqueryStmtAll = conn.prepareStatement(\"SELECT * FROM People\");\r\n\t\t\tqueryAvaliable = conn.prepareStatement(\"SELECT * FROM People WHERE sent = 0\");\r\n\t\t\tupdateStmt = conn.prepareStatement(\"UPDATE People SET sent = 1 WHERE id = ?\");\r\n\t\t\tqueryStmtPerson = conn.prepareStatement(\"SELECT * FROM People WHERE id = ?\");\r\n\r\n\t\t\t//get the column names and a special space line\r\n\t\t\tStatement select = conn.createStatement();\r\n\t\t\tResultSet resultSet = select.executeQuery(\"SELECT * FROM People\");\r\n\t\t\tResultSetMetaData rsmd = resultSet.getMetaData();\r\n\t\t\tnumColumns = rsmd.getColumnCount();\r\n\t\t\tColumnNames = \"\";\r\n\t\t\tspaceLine = \"\";\r\n\t\t\tfor(int i = 1;i<=numColumns;i++){\r\n\t\t\t\tColumnNames += rsmd.getColumnName(i) + \"\\t\";\r\n\t\t\t\tfor(int j = 0;j<rsmd.getColumnName(i).length();j++)\r\n\t\t\t\t\tspaceLine += \"-\";\r\n\t\t\t\tspaceLine += \"\\t\";\r\n\t\t\t}\r\n\t\t\tColumnNames += \"\\n\";\r\n\t\t\tspaceLine += \"\\n\";\r\n\t\t} catch (SQLException e){\r\n\t\t\tSystem.err.println(\"Connection error: \" + e);\r\n\t\t\tSystem.exit(1);\r\n\t\t}\r\n\t}\r\n\r\n\tprivate class QueryButtonListener implements ActionListener {\r\n\t\t@Override\r\n\t\tpublic void actionPerformed(ActionEvent e) {\r\n\t\t\ttry {\r\n\t\t\t\ttextQueryArea.setText(ColumnNames);\r\n\t\t\t\ttextQueryArea.append(spaceLine);\r\n\t\t\t\tResultSet reset = queryStmtAll.executeQuery();\r\n\t\t\t\tString rowString = \"\";\r\n\t\t\t\twhile (reset.next()) {\r\n\t\t\t\t\tfor (int i=1;i<=numColumns;i++) {\r\n\t\t\t\t\t\tObject o = reset.getObject(i);\r\n\t\t\t\t\t\trowString += o.toString() + \"\\t\";\r\n\t\t\t\t\t}\r\n\t\t\t\t\trowString += \"\\n\";\r\n\t\t\t\t}\r\n\t\t\t\ttextQueryArea.append(rowString);\r\n\t\t\t} catch (SQLException e1) {\r\n\t\t\t\te1.printStackTrace();\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\tprivate class OCButtonListener implements ActionListener {\r\n\t\t@Override\r\n\t\tpublic void actionPerformed(ActionEvent e) {\r\n\t\t\ttry {\r\n\t\t\t\tsocket = new Socket(host, port);\r\n\t\t\t\thostName.setText(host+\":\"+port);\r\n\t\t\t\ttoServer = new ObjectOutputStream(socket.getOutputStream());\r\n\t\t\t\tfromServer = new ObjectInputStream(socket.getInputStream());\r\n\t\t\t} catch (IOException ioException) {\r\n\t\t\t\tioException.printStackTrace();\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\tprivate class SendButtonListener implements ActionListener {\r\n\t\tpublic void actionPerformed(ActionEvent e) {\r\n\t\t\ttry {\r\n\t\t\t\t\r\n\t\t\t\t// responses are going to come over the input as text, and that's tricky,\r\n\t\t\t\t// which is why I've done that for you:\r\n\t\t\t\tbr = new BufferedReader(new InputStreamReader(socket.getInputStream()));\r\n\t\t\t\t\r\n\t\t\t\t// now, get the person on the object dropdownbox we've selected\r\n\t\t\t\tComboBoxItem personEntry = (ComboBoxItem)peopleSelect.getSelectedItem();\r\n\t\t\t\t\r\n\t\t\t\t// That's tricky which is why I have included the code. the personEntry\r\n\t\t\t\t// contains an ID and a name. You want to get a \"Person\" object out of that\r\n\t\t\t\t// which is stored in the database\r\n\t\t\t\tqueryStmtPerson.setInt(1,personEntry.getId());\r\n\t\t\t\tResultSet reset = queryStmtPerson.executeQuery();\r\n\t\t\t\treset.next();\r\n\t\t\t\tPerson p = new Person(reset.getString(1),reset.getString(2)\r\n\t\t\t\t,reset.getInt(3),reset.getString(4),reset.getInt(6));\r\n\r\n\t\t\t\t\r\n\t\t\t\t// Send the person object here over an output stream that you got from the socket.\r\n\t\t\t\ttoServer.writeObject(p);\r\n\t\t\t\ttoServer.flush();\r\n\r\n\t\t\t\t//String response = br.readLine();\r\n\t\t\t\tString response = null;\r\n\t\t\t\ttry {\r\n\t\t\t\t\tresponse = (String) fromServer.readObject();\r\n\t\t\t\t} catch (ClassNotFoundException classNotFoundException) {\r\n\t\t\t\t\tclassNotFoundException.printStackTrace();\r\n\t\t\t\t}\r\n\t\t\t\tif (response.contains(\"Success\")) {\r\n\t\t\t\t\t// what do you do after we know that the server has successfully\r\n\t\t\t\t\t// received the data and written it to its own database?\r\n\t\t\t\t\t// you will have to write the code for that.\r\n\t\t\t\t\ttry {\r\n\t\t\t\t\t\tSystem.out.println(\"Success\");\r\n\t\t\t\t\t\tupdateStmt.setInt(1,p.getId());\r\n\t\t\t\t\t\tupdateStmt.executeUpdate();\r\n\t\t\t\t\t\tclearComboBox();\r\n\t\t\t\t\t\tfillComboBox();\r\n\t\t\t\t\t} catch (SQLException e1) {\r\n\t\t\t\t\t\te1.printStackTrace();\r\n\t\t\t\t\t}\r\n\t\t\t\t} else {\r\n\t\t\t\t\tSystem.out.println(\"Failed\");\r\n\t\t\t\t}\r\n\t\t\t} catch (IOException | SQLException e1) {\r\n\t\t\t\te1.printStackTrace();\r\n\t\t\t}\r\n\t        \r\n\t\t\t\r\n\t\t}\r\n\t\t\r\n\t}\r\n\t\r\n   private List<ComboBoxItem> getNames() throws SQLException {\r\n\t\t ans.removeAll(ans);\r\n\t   ResultSet reset = queryAvaliable.executeQuery();\r\n\t   while (reset.next()){\r\n\t\t\t\tString str = reset.getObject(1).toString()+\" \"+reset.getObject(2);\r\n\t\t\t\tint id = (Integer) reset.getObject(6);\r\n\t\t\t\tComboBoxItem cbi = new ComboBoxItem(id,str);\r\n\t\t\t\tans.add(cbi);\r\n\t\t }\r\n\t   return ans;\r\n   }\r\n\t\r\n\t// a JComboBox will take a bunch of objects and use the \"toString()\" method\r\n\t// of those objects to print out what's in there. \r\n\t// So I have provided to you an object to put people's names and ids in\r\n\t// and the combo box will print out their names. \r\n\t// now you will want to get the ComboBoxItem object that is selected in the combo box\r\n\t// and get the corresponding row in the People table and make a person object out of that.\r\n\tclass ComboBoxItem {\r\n\t\tprivate int id;\r\n\t\tprivate String name;\r\n\t\t\r\n\t\tpublic ComboBoxItem(int id, String name) {\r\n\t\t\tthis.id = id;\r\n\t\t\tthis.name = name;\r\n\t\t}\r\n\t\t\r\n\t\tpublic int getId() {\r\n\t\t\treturn this.id;\r\n\t\t}\r\n\t\t\r\n\t\tpublic String getName() {\r\n\t\t\treturn this.name;\r\n\t\t}\r\n\t\t\r\n\t\tpublic String toString() {\r\n\t\t\treturn this.name;\r\n\t\t}\r\n\t}\r\n\t\r\n\tpublic static void main(String[] args) {\r\n\t\tClientInterface ci = new ClientInterface();\r\n\t\tci.setVisible(true);\r\n\t}\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ../FinalProject/src/finalproject/client/ClientInterface.java	(revision e0435979d85e39b0490b805ad90e898cb48d8eda)
++++ ../FinalProject/src/finalproject/client/ClientInterface.java	(date 1589294666649)
+@@ -9,7 +9,8 @@
+ import javax.swing.*;
+ 
+ import finalproject.client.ClientInterface.ComboBoxItem;
+-import finalproject.db.DBInterface;
++//import finalproject.db.DBInterface;
++//import finalproject.entities.Person;
+ import finalproject.entities.Person;
+ 
+ import java.awt.BorderLayout;
+@@ -384,8 +385,9 @@
+ 	}
+ 	
+ 	public static void main(String[] args) {
+-		ClientInterface ci = new ClientInterface();
+-		ci.setVisible(true);
++		//ClientInterface ci = new ClientInterface();
++		//ci.setVisible(true);
++		System.out.println(1);
+ 	}
+ 
+ 
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/vcs.xml	(date 1589294784103)
++++ .idea/vcs.xml	(date 1589294784103)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/libraries/sqlite_jdbc_3_30_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/libraries/sqlite_jdbc_3_30_1.xml	(date 1589295012200)
++++ .idea/libraries/sqlite_jdbc_3_30_1.xml	(date 1589295012200)
+@@ -0,0 +1,9 @@
++<component name="libraryTable">
++  <library name="sqlite-jdbc-3.30.1">
++    <CLASSES>
++      <root url="jar://$PROJECT_DIR$/sqlite-jdbc-3.30.1.jar!/" />
++    </CLASSES>
++    <JAVADOC />
++    <SOURCES />
++  </library>
++</component>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/modules.xml	(date 1589294777911)
++++ .idea/modules.xml	(date 1589294777911)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/Final.iml" filepath="$PROJECT_DIR$/Final.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(date 1589294777896)
++++ .idea/misc.xml	(date 1589294777896)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_13" default="true" project-jdk-name="13" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/workspace.xml	(date 1589385183429)
++++ .idea/workspace.xml	(date 1589385183429)
+@@ -0,0 +1,172 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="BranchesTreeState">
++    <expand>
++      <path>
++        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
++        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
++      </path>
++      <path>
++        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
++        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
++      </path>
++      <path>
++        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
++        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
++        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
++      </path>
++    </expand>
++    <select />
++  </component>
++  <component name="ChangeListManager">
++    <list default="true" id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="">
++      <change afterPath="$PROJECT_DIR$/.idea/libraries/sqlite_jdbc_3_30_1.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Final.iml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/FinalProjectDocument.docx" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/client.db" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/db/DBInterface.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/entities/Person.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/server.db" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/sqlite-jdbc-3.30.1.jar" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/src/finalproject/db/DBInterface.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/src/finalproject/entities/Person.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/src/finalproject/server/Server.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/../FinalProject/src/finalproject/client/ClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../FinalProject/src/finalproject/client/ClientInterface.java" afterDir="false" />
++    </list>
++    <option name="SHOW_DIALOG" value="false" />
++    <option name="HIGHLIGHT_CONFLICTS" value="true" />
++    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
++    <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="Git.Settings">
++    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
++  </component>
++  <component name="ProjectId" id="1boO2hq5heKFxibQmcFS2FCuyHi" />
++  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
++    <ConfirmationsSetting value="2" id="Add" />
++  </component>
++  <component name="ProjectViewState">
++    <option name="hideEmptyMiddlePackages" value="true" />
++    <option name="showLibraryContents" value="true" />
++  </component>
++  <component name="PropertiesComponent">
++    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
++    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
++    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
++    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../NetworkingLecture20200502-revised" />
++  </component>
++  <component name="RunManager" selected="Application.Server">
++    <configuration name="ClientInterface" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
++      <option name="MAIN_CLASS_NAME" value="finalproject.client.ClientInterface" />
++      <module name="Final" />
++      <extension name="coverage">
++        <pattern>
++          <option name="PATTERN" value="finalproject.client.*" />
++          <option name="ENABLED" value="true" />
++        </pattern>
++      </extension>
++      <method v="2">
++        <option name="Make" enabled="true" />
++      </method>
++    </configuration>
++    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
++      <option name="MAIN_CLASS_NAME" value="finalproject.server.Server" />
++      <module name="Final" />
++      <extension name="coverage">
++        <pattern>
++          <option name="PATTERN" value="finalproject.server.*" />
++          <option name="ENABLED" value="true" />
++        </pattern>
++      </extension>
++      <method v="2">
++        <option name="Make" enabled="true" />
++      </method>
++    </configuration>
++    <list>
++      <item itemvalue="Application.ClientInterface" />
++      <item itemvalue="Application.Server" />
++    </list>
++    <recent_temporary>
++      <list>
++        <item itemvalue="Application.Server" />
++        <item itemvalue="Application.ClientInterface" />
++      </list>
++    </recent_temporary>
++  </component>
++  <component name="SvnConfiguration">
++    <configuration />
++  </component>
++  <component name="TaskManager">
++    <task active="true" id="Default" summary="Default task">
++      <changelist id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="" />
++      <created>1589294774982</created>
++      <option name="number" value="Default" />
++      <option name="presentableId" value="Default" />
++      <updated>1589294774982</updated>
++    </task>
++    <servers />
++  </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
++  <component name="VcsManagerConfiguration">
++    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++  </component>
++  <component name="WindowStateProjectService">
++    <state x="828" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589296469148">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state x="828" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589296469148" />
++    <state x="925" y="451" key="FileChooserDialogImpl" timestamp="1589296005781">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state x="925" y="451" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589296005781" />
++    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589385183363">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
++    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589385183363">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
++    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589385183363">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
++    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589385183363">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
++    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589294850269">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589294850269" />
++    <state x="1096" y="244" key="run.anything.popup" timestamp="1589295103337">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state x="1096" y="244" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1589295103337" />
++  </component>
++</project>
+\ No newline at end of file
+Index: src/finalproject/entities/Person.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/finalproject/entities/Person.java	(date 1589159882871)
++++ src/finalproject/entities/Person.java	(date 1589159882871)
+@@ -0,0 +1,58 @@
++package finalproject.entities;
++
++public class Person implements java.io.Serializable {
++
++	private static final long serialVersionUID = 4190276780070819093L;
++
++	// this is a person object that you will construct with data from the DB
++	// table. The "sent" column is unnecessary. It's just a person with
++	// a first name, last name, age, city, and ID.
++	private String first;
++	private String last;
++	private int age;
++	private String city;
++	private int id;
++
++	public Person(String f, String l, int a, String c, int i){
++		this.first = f;
++		this.last = l;
++		this.age = a;
++		this.city = c;
++		this.id = i;
++	}
++	public Person(Person s){
++		this.first = s.first;
++		this.last = s.last;
++		this.age = s.age;
++		this.city = s.city;
++		this.id = s.id;
++	}
++
++	public String getFirst(){
++		return this.first;
++	}
++	public String getLast(){
++		return this.last;
++	}
++	public int getAge(){
++		return this.age;
++	}
++	public String getCity(){
++		return this.city;
++	}
++	public int getId(){
++		return this.id;
++	}
++
++
++	@Override
++	public String toString() {
++		return "Person[" +
++				"first='" + first + '\'' +
++				", last='" + last + '\'' +
++				", age=" + age +
++				", city='" + city + '\'' +
++				", id=" + id +
++				']';
++	}
++}
+Index: Final.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Final.iml	(date 1589295012186)
++++ Final.iml	(date 1589295012186)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$">
++      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
++    </content>
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++    <orderEntry type="library" name="sqlite-jdbc-3.30.1" level="project" />
++  </component>
++</module>
+\ No newline at end of file
+Index: src/finalproject/db/DBInterface.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/finalproject/db/DBInterface.java	(date 1589066372515)
++++ src/finalproject/db/DBInterface.java	(date 1589066372515)
+@@ -0,0 +1,28 @@
++package finalproject.db;
++import java.sql.*;
++import java.util.ArrayList;
++
++import finalproject.entities.Person;
++
++public class DBInterface {
++
++	/* implementing or using this class isn't strictly required, but
++	 * you might want to abstract some of the interactions with and queries
++	 * to the database to a separate class.
++	 */
++	
++	Connection conn;
++	
++	public DBInterface() {
++		
++	}
++	
++	public Connection getConn() {
++		return this.conn;
++	}
++	
++	public void setConnection() throws SQLException {
++		//this.conn =
++	}
++	
++}
+Index: src/finalproject/server/Server.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/finalproject/server/Server.java	(date 1589299385191)
++++ src/finalproject/server/Server.java	(date 1589299385191)
+@@ -0,0 +1,291 @@
++package finalproject.server;
++
++//import finalproject.client.ClientInterface.QueryButtonListener;
++import java.awt.BorderLayout;
++import java.awt.GridLayout;
++import java.awt.event.ActionEvent;
++import java.awt.event.ActionListener;
++import java.io.DataInputStream;
++import java.io.DataOutputStream;
++import java.io.IOException;
++import java.io.ObjectInputStream;
++import java.io.ObjectOutputStream;
++import java.net.InetAddress;
++import java.net.ServerSocket;
++import java.net.Socket;
++import java.sql.Connection;
++import java.sql.DriverManager;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.ResultSetMetaData;
++import java.sql.SQLException;
++import java.sql.Statement;
++import java.util.Date;
++import javax.swing.JButton;
++import javax.swing.JFileChooser;
++import javax.swing.JFrame;
++import javax.swing.JLabel;
++import javax.swing.JMenu;
++import javax.swing.JMenuBar;
++import javax.swing.JMenuItem;
++import javax.swing.JPanel;
++import javax.swing.JScrollPane;
++import javax.swing.JTextArea;
++import finalproject.db.DBInterface;
++import finalproject.entities.Person;
++import javax.swing.JTextField;
++
++public class Server extends JFrame {
++
++	public static final int DEFAULT_PORT = 8001;
++	private static final int FRAME_WIDTH = 600;
++	private static final int FRAME_HEIGHT = 800;
++	final int AREA_ROWS = 10;
++	final int AREA_COLUMNS = 40;
++	private int clientNo = 0;
++
++	private JPanel controlPanel;
++	private JTextArea textQueryArea;
++	private JMenuBar menuBar;
++	private JTextField dbName;
++	private JScrollPane scrollPane;
++	private JButton queryDB;
++
++	private Connection conn;
++	private PreparedStatement queryStmtAll;
++	private PreparedStatement insertStmt;
++	private int numColumns;
++	private String ColumnNames;
++	private String spaceLine;
++
++	private int port;
++	private Socket socket;
++
++
++	public Server() throws IOException, SQLException {
++		this(DEFAULT_PORT, "server.db");
++	}
++	
++	public Server(String dbFile) throws IOException, SQLException {
++		this(DEFAULT_PORT, dbFile);
++	}
++
++	public Server(int port, String dbFile) throws IOException, SQLException {
++
++		this.port = port;
++		this.setSize(Server.FRAME_WIDTH, Server.FRAME_HEIGHT);
++		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
++
++		createMenus();
++		createControlPanle();
++		textQueryArea = new JTextArea(AREA_ROWS,AREA_COLUMNS);
++		textQueryArea.setEditable(false);
++
++		scrollPane = new JScrollPane(textQueryArea);
++		this.setLayout(new BorderLayout());
++		this.add(controlPanel,BorderLayout.NORTH);
++		this.add(scrollPane,BorderLayout.CENTER);
++
++		connectToDB(dbFile);
++		textQueryArea.setText("Listening on port "+port + "\n");
++		queryDB.addActionListener(new QueryButtonListener());
++
++		this.init();
++	}
++
++	private void init() {
++		new Thread(()->{
++			try {
++				ServerSocket serverSocket = new ServerSocket(port);
++
++				while(true){
++					socket = serverSocket.accept();
++
++					clientNo++;
++
++					textQueryArea.append("Starting thread for client " + clientNo +
++							" at " + new Date() + '\n');
++
++					InetAddress inetAddress = socket.getInetAddress();
++					textQueryArea.append("Client " + clientNo + "'s host name is "
++							+ inetAddress.getHostName() + "\n");
++					textQueryArea.append("Client " + clientNo + "'s IP Address is "
++							+ inetAddress.getHostAddress() + "\n");
++					textQueryArea.append("listening for input from from client "
++							+ clientNo + "\n");
++
++					new Thread(new HandleAClient(socket, clientNo)).start();
++				}
++			} catch (IOException e) {
++				e.printStackTrace();
++			}
++		}).start();
++	}
++
++	private class HandleAClient implements Runnable {
++		private Socket socket; // A connected socket
++		private int clientNum;
++		ObjectInputStream inputFromClient;
++		ObjectOutputStream outputToClient;
++
++		/** Construct a thread */
++		public HandleAClient(Socket socket, int clientNum) {
++			this.socket = socket;
++			this.clientNum = clientNum;
++			try {
++				// Create data input and output streams
++				inputFromClient = new ObjectInputStream(
++						socket.getInputStream());
++				outputToClient = new ObjectOutputStream(
++						socket.getOutputStream());
++			} catch (IOException e) {
++				e.printStackTrace();
++			}
++		}
++
++		/** Run a thread */
++		public void run() {
++			try {
++				// Continuously serve the client
++				while (true) {
++					try {
++						Object object = inputFromClient.readObject();
++						Person p = (Person) object;
++						textQueryArea.append("got person " + p.toString() +
++								" from client " + clientNum +" inserting into db " + '\n');
++
++						insertStmt.setString(1,p.getFirst());
++						insertStmt.setString(2,p.getLast());
++						insertStmt.setInt(3,p.getAge());
++						insertStmt.setString(4,p.getCity());
++						insertStmt.setInt(5,p.getId());
++						insertStmt.executeUpdate();
++
++						textQueryArea.append("Inserted successfully" + '\n');
++
++						// Send back to the client
++						String response = "Success"+"\n";
++						outputToClient.writeObject(response);
++						outputToClient.flush();
++					} catch (ClassNotFoundException e) {
++						e.printStackTrace();
++					} catch (SQLException e1){
++						String response = "Failed"+"\n";
++						outputToClient.writeObject(response);
++						outputToClient.flush();
++						e1.printStackTrace();
++					}
++				}
++			}
++			catch(IOException ex) {
++				ex.printStackTrace();
++			}
++		}
++	}
++
++	private JPanel createControlPanle() {
++		controlPanel = new JPanel(new GridLayout(2,1));
++
++		JPanel jp1 = new JPanel();
++		JPanel jp2 = new JPanel();
++
++		JLabel lb1 = new JLabel("DB: ");
++		dbName = new JTextField(10);
++		dbName.setText("<None>");
++		dbName.setEditable(false);
++		jp1.add(lb1);
++		jp1.add(dbName);
++
++		queryDB = new JButton("Query DB");
++		jp2.add(queryDB);
++
++		controlPanel.add(jp1);
++		controlPanel.add(jp2);
++		return controlPanel;
++	}
++
++	private void createMenus() {
++		menuBar = new JMenuBar();
++		menuBar.add(createFileMenu());
++		this.setJMenuBar(menuBar);
++	}
++
++	private JMenu createFileMenu() {
++		JMenu menu = new JMenu("File");
++		menu.add(createFileExitItem());
++		return menu;
++	}
++
++	private JMenuItem createFileExitItem() {
++		JMenuItem item = new JMenuItem("Exit");
++		item.addActionListener(e -> System.exit(0));
++		return item;
++	}
++
++	private void connectToDB(String dbFile){
++		String url = "jdbc:sqlite:"+dbFile;
++		try {
++			conn = DriverManager.getConnection(url);
++			queryStmtAll = conn.prepareStatement("SELECT * FROM People");
++			insertStmt = conn.prepareStatement("INSERT INTO People (first,last,age,city,sent,id) "
++					+ "VALUES (?,?,?,?,1,?)");
++			dbName.setText("server.db");
++
++			//get the column names and a special space line
++			Statement select = conn.createStatement();
++			ResultSet resultSet = select.executeQuery("SELECT * FROM People");
++			ResultSetMetaData rsmd = resultSet.getMetaData();
++			numColumns = rsmd.getColumnCount();
++			ColumnNames = "";
++			spaceLine = "";
++			for(int i = 1;i<=numColumns;i++){
++				ColumnNames += rsmd.getColumnName(i) + "\t";
++				for(int j = 0;j<rsmd.getColumnName(i).length();j++)
++					spaceLine += "-";
++				spaceLine += "\t";
++			}
++			ColumnNames += "\n";
++			spaceLine += "\n";
++		} catch (SQLException e) {
++			System.err.println("Connection error: " + e);
++			System.exit(1);
++		}
++	}
++
++	private class QueryButtonListener implements ActionListener{
++		@Override
++		public void actionPerformed(ActionEvent e) {
++			try {
++				//textQueryArea.setText("Listening on port "+port + "\n");
++				textQueryArea.append("DB Results:"+"\n");
++				textQueryArea.append(ColumnNames);
++				textQueryArea.append(spaceLine);
++				ResultSet reset = queryStmtAll.executeQuery();
++				String rowString = "";
++				while (reset.next()) {
++					for (int i=1;i<=numColumns;i++) {
++						Object o = reset.getObject(i);
++						rowString += o.toString() + "\t";
++					}
++					rowString += "\n";
++				}
++				textQueryArea.append(rowString);
++			} catch (SQLException e1) {
++				e1.printStackTrace();
++			}
++		}
++	}
++
++	public static void main(String[] args) {
++
++		Server sv;
++		try {
++			sv = new Server("server.db");
++			sv.setVisible(true);
++		} catch (IOException | SQLException e) {
++			e.printStackTrace();
++		}
++	}
++}
++
++
+Index: src/finalproject/client/ClientInterface.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/finalproject/client/ClientInterface.java	(date 1589299060933)
++++ src/finalproject/client/ClientInterface.java	(date 1589299060933)
+@@ -0,0 +1,393 @@
++package finalproject.client;
++
++import java.io.ObjectInputStream;
++import java.util.ArrayList;
++import java.sql.*;
++import java.util.Arrays;
++import java.util.LinkedList;
++import java.util.List;
++import javax.swing.*;
++
++import finalproject.client.ClientInterface.ComboBoxItem;
++import finalproject.db.DBInterface;
++import finalproject.entities.Person;
++
++import java.awt.BorderLayout;
++import java.awt.GridLayout;
++import java.awt.event.ActionEvent;
++import java.awt.event.ActionListener;
++import java.io.BufferedReader;
++import java.io.DataInputStream;
++import java.io.IOException;
++import java.io.InputStreamReader;
++import java.io.ObjectOutputStream;
++import java.net.Socket;
++
++public class ClientInterface extends JFrame {
++
++	private static final long serialVersionUID = 1L;
++
++	public static final int DEFAULT_PORT = 8001;
++	
++	private static final int FRAME_WIDTH = 600;
++	private static final int FRAME_HEIGHT = 400;
++	final int AREA_ROWS = 10;
++	final int AREA_COLUMNS = 52;
++
++	//for UI
++	private JPanel controlPanel;
++	private JTextArea textQueryArea;
++	private JScrollPane scrollPane;
++	private JMenuBar menuBar;
++	private JTextField dbName;
++	private JTextField hostName;
++
++	private JButton openConn;
++	private JButton closeConn;
++	private JButton sendData;
++	private JButton queryDB;
++
++	//for db
++	private Connection conn;
++	private PreparedStatement queryStmtAll;
++	private PreparedStatement queryAvaliable;
++	private PreparedStatement queryStmtPerson;
++	private PreparedStatement updateStmt;
++	private int numColumns;
++	private String ColumnNames;
++	private String spaceLine;
++	private List<ComboBoxItem> ans;
++
++	private JComboBox peopleSelect;
++	private JFileChooser jFileChooser;
++
++	// for socket
++	private Socket socket;
++	private int port;
++	private String host;
++	private ObjectOutputStream toServer;
++	private ObjectInputStream fromServer;
++	private BufferedReader br;
++	
++	public ClientInterface() {
++		this(DEFAULT_PORT);
++	}
++	
++	public ClientInterface(int port) {
++		this.port = port;
++		ans = new ArrayList<>();
++		this.host = "localhost";
++
++		jFileChooser = new JFileChooser(".");
++		createControlPanel();
++		textQueryArea = new JTextArea(AREA_ROWS,AREA_COLUMNS);
++		textQueryArea.setEditable(false);
++
++		scrollPane = new JScrollPane(textQueryArea);
++		//JPanel textPanel = new JPanel();
++		//textPanel.add(scrollPane);
++
++		this.setLayout(new GridLayout(2,1));
++		this.add(controlPanel);
++		//this.add(textPanel);
++		this.add(scrollPane);
++
++		queryDB.addActionListener(new QueryButtonListener());
++		openConn.addActionListener(new OCButtonListener());
++		closeConn.addActionListener((e) -> {
++			try{
++				socket.close();
++				hostName.setText("<None>");
++			} catch (Exception e1){
++			e1.printStackTrace();
++			}
++		});
++		sendData.addActionListener(new SendButtonListener());
++	}
++
++	private JPanel createControlPanel() {
++		controlPanel = new JPanel(new GridLayout(2,1));
++		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
++		this.setSize(FRAME_WIDTH,FRAME_HEIGHT);
++		createMenus();
++
++		JPanel northPanel = new JPanel(new GridLayout(3,1));
++		JPanel centerPanel = new JPanel(new GridLayout(2,1));
++
++		JPanel np1 = new JPanel();
++		JLabel np1lb = new JLabel("Active DB: ");
++		dbName = new JTextField(10);
++		dbName.setText("<None>");
++		dbName.setEditable(false);
++		np1.add(np1lb);
++		np1.add(dbName);
++		northPanel.add(np1);
++
++		JPanel np2 = new JPanel();
++		JLabel np2lb = new JLabel("Active Connection: ");
++		hostName = new JTextField(10);
++		hostName.setText("<None>");
++		hostName.setEditable(false);
++		np2.add(np2lb);
++		np2.add(hostName);
++		northPanel.add(np2);
++
++		JPanel np3 = new JPanel();
++		peopleSelect = new JComboBox();
++		peopleSelect.addItem("<Empty>");
++		peopleSelect.setEditable(false);
++		np3.add(peopleSelect);
++		northPanel.add(np3);
++		
++		JPanel cp1 = new JPanel();
++		openConn = new JButton("Open Connection");
++		closeConn = new JButton("Close Connection");
++		cp1.add(openConn);
++		cp1.add(closeConn);
++		centerPanel.add(cp1);
++
++		JPanel cp2 = new JPanel();
++		sendData = new JButton("Send Data");
++		queryDB = new JButton("Query DB Data");
++		cp2.add(sendData);cp2.add(queryDB);
++		centerPanel.add(cp2);
++		
++
++		controlPanel.add(northPanel);
++		controlPanel.add(centerPanel);
++		return controlPanel;
++	}
++
++	private void createMenus() {
++		menuBar = new JMenuBar();
++		menuBar.add(createFileMenu());
++		this.setJMenuBar(menuBar);
++	}
++
++	public JMenu createFileMenu() {
++      JMenu menu = new JMenu("File");
++      menu.add(createFileOpenItem());
++      menu.add(createFileExitItem());
++      return menu;
++   }
++
++	private JMenuItem createFileExitItem() {
++		JMenuItem item = new JMenuItem("Exit");
++		item.addActionListener(e -> System.exit(0));
++		return item;
++	}
++
++
++	private void fillComboBox() throws SQLException {
++	   List<ComboBoxItem> l = getNames();
++	   peopleSelect.setModel(new DefaultComboBoxModel(l.toArray()));
++	   if(l.isEmpty())
++	   	peopleSelect.addItem("<Empty>");
++   }
++   
++   private JMenuItem createFileOpenItem() {
++	   JMenuItem item = new JMenuItem("Open DB");
++	   class OpenDBListener implements ActionListener {
++	   	public void actionPerformed(ActionEvent event) {
++	   		int returnVal = jFileChooser.showOpenDialog(getParent());
++	   		if (returnVal == JFileChooser.APPROVE_OPTION) {
++	   			System.out.println("You chose to open this file: " + jFileChooser.getSelectedFile().getAbsolutePath());
++	   			String dbFileName = jFileChooser.getSelectedFile().getAbsolutePath();
++	   			try {
++	   				connectToDB(dbFileName);
++	   				dbName.setText(dbFileName.substring(dbFileName.lastIndexOf("\\")+1));
++	   				/*queryButtonListener.setConnection(conn);*/
++						clearComboBox();
++						fillComboBox();
++	   			} catch (Exception e ) {
++	   				System.err.println("error connection to db: "+ e.getMessage());
++	   				e.printStackTrace();
++	   				dbName.setText("<None>");
++						clearComboBox();
++	   			}
++	   			finally {
++						textQueryArea.setText("");
++					}
++	   		}
++	   	}
++	   }
++	   item.addActionListener(new OpenDBListener());
++	   return item;
++   }
++
++	private void clearComboBox() {
++		peopleSelect.removeAllItems();
++		peopleSelect.addItem("<Empty>");
++	}
++
++	private void connectToDB(String dbFileName) {
++		try{
++			String url = "jdbc:sqlite:"+dbFileName;
++			conn = DriverManager.getConnection(url);
++			queryStmtAll = conn.prepareStatement("SELECT * FROM People");
++			queryAvaliable = conn.prepareStatement("SELECT * FROM People WHERE sent = 0");
++			updateStmt = conn.prepareStatement("UPDATE People SET sent = 1 WHERE id = ?");
++			queryStmtPerson = conn.prepareStatement("SELECT * FROM People WHERE id = ?");
++
++			//get the column names and a special space line
++			Statement select = conn.createStatement();
++			ResultSet resultSet = select.executeQuery("SELECT * FROM People");
++			ResultSetMetaData rsmd = resultSet.getMetaData();
++			numColumns = rsmd.getColumnCount();
++			ColumnNames = "";
++			spaceLine = "";
++			for(int i = 1;i<=numColumns;i++){
++				ColumnNames += rsmd.getColumnName(i) + "\t";
++				for(int j = 0;j<rsmd.getColumnName(i).length();j++)
++					spaceLine += "-";
++				spaceLine += "\t";
++			}
++			ColumnNames += "\n";
++			spaceLine += "\n";
++		} catch (SQLException e){
++			System.err.println("Connection error: " + e);
++			System.exit(1);
++		}
++	}
++
++	private class QueryButtonListener implements ActionListener {
++		@Override
++		public void actionPerformed(ActionEvent e) {
++			try {
++				textQueryArea.setText(ColumnNames);
++				textQueryArea.append(spaceLine);
++				ResultSet reset = queryStmtAll.executeQuery();
++				String rowString = "";
++				while (reset.next()) {
++					for (int i=1;i<=numColumns;i++) {
++						Object o = reset.getObject(i);
++						rowString += o.toString() + "\t";
++					}
++					rowString += "\n";
++				}
++				textQueryArea.append(rowString);
++			} catch (SQLException e1) {
++				e1.printStackTrace();
++			}
++		}
++	}
++
++	private class OCButtonListener implements ActionListener {
++		@Override
++		public void actionPerformed(ActionEvent e) {
++			try {
++				socket = new Socket(host, port);
++				hostName.setText(host +":"+port);
++				toServer = new ObjectOutputStream(socket.getOutputStream());
++				fromServer = new ObjectInputStream(socket.getInputStream());
++			} catch (IOException ioException) {
++				ioException.printStackTrace();
++			}
++		}
++	}
++
++	private class SendButtonListener implements ActionListener {
++		public void actionPerformed(ActionEvent e) {
++			try {
++				
++				// responses are going to come over the input as text, and that's tricky,
++				// which is why I've done that for you:
++				br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
++				
++				// now, get the person on the object dropdownbox we've selected
++				ComboBoxItem personEntry = (ComboBoxItem)peopleSelect.getSelectedItem();
++				
++				// That's tricky which is why I have included the code. the personEntry
++				// contains an ID and a name. You want to get a "Person" object out of that
++				// which is stored in the database
++				queryStmtPerson.setInt(1,personEntry.getId());
++				ResultSet reset = queryStmtPerson.executeQuery();
++				reset.next();
++				Person p = new Person(reset.getString(1),reset.getString(2)
++				,reset.getInt(3),reset.getString(4),reset.getInt(6));
++
++				
++				// Send the person object here over an output stream that you got from the socket.
++				toServer.writeObject(p);
++				toServer.flush();
++
++				//String response = br.readLine();
++				String response = null;
++				try {
++					response = (String) fromServer.readObject();
++				} catch (ClassNotFoundException classNotFoundException) {
++					classNotFoundException.printStackTrace();
++				}
++				if (response.contains("Success")) {
++					// what do you do after we know that the server has successfully
++					// received the data and written it to its own database?
++					// you will have to write the code for that.
++					try {
++						System.out.println("Success");
++						updateStmt.setInt(1,p.getId());
++						updateStmt.executeUpdate();
++						clearComboBox();
++						fillComboBox();
++					} catch (SQLException e1) {
++						e1.printStackTrace();
++					}
++				} else {
++					System.out.println("Failed");
++				}
++			} catch (IOException | SQLException e1) {
++				e1.printStackTrace();
++			}
++	        
++			
++		}
++		
++	}
++	
++   private List<ComboBoxItem> getNames() throws SQLException {
++		 ans.removeAll(ans);
++	   ResultSet reset = queryAvaliable.executeQuery();
++	   while (reset.next()){
++				String str = reset.getObject(1).toString()+" "+reset.getObject(2);
++				int id = (Integer) reset.getObject(6);
++				ComboBoxItem cbi = new ComboBoxItem(id,str);
++				ans.add(cbi);
++		 }
++	   return ans;
++   }
++	
++	// a JComboBox will take a bunch of objects and use the "toString()" method
++	// of those objects to print out what's in there. 
++	// So I have provided to you an object to put people's names and ids in
++	// and the combo box will print out their names. 
++	// now you will want to get the ComboBoxItem object that is selected in the combo box
++	// and get the corresponding row in the People table and make a person object out of that.
++	class ComboBoxItem {
++		private int id;
++		private String name;
++		
++		public ComboBoxItem(int id, String name) {
++			this.id = id;
++			this.name = name;
++		}
++		
++		public int getId() {
++			return this.id;
++		}
++		
++		public String getName() {
++			return this.name;
++		}
++		
++		public String toString() {
++			return this.name;
++		}
++	}
++	
++	public static void main(String[] args) {
++		ClientInterface ci = new ClientInterface();
++		ci.setVisible(true);
++	}
++
++
++
++}
