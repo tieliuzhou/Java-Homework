@@ -197,6 +197,7 @@ public class ClientInterface extends JFrame {
 	   			String dbFileName = jFileChooser.getSelectedFile().getAbsolutePath();
 	   			try {
 	   				connectToDB(dbFileName);
+	   				//My operating system is Windows, so it is a different file path format as Linux
 	   				dbName.setText(dbFileName.substring(dbFileName.lastIndexOf("\\")+1));
 	   				/*queryButtonListener.setConnection(conn);*/
 						clearComboBox();

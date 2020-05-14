@@ -20,11 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="Final">
+      <change afterPath="$PROJECT_DIR$/readme.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/finalproject/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/finalproject/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/~$nalProjectDocument.docx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +47,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../NetworkingLecture20200502-revised" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RunManager" selected="Application.Server">
     <configuration name="ClientInterface" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
@@ -119,7 +121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589469589439</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Final">
+      <created>1589471633021</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1589471633021</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -152,26 +161,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="925" y="451" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589296005781" />
-    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589471339865">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589471643936">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589471339865" />
-    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589471339865">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
+    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589471643936">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589471339865" />
-    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589471339865">
+    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
+    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589471643936">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589471339865" />
-    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589471339865">
+    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
+    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589471643936">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589471339865" />
+    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
     <state x="1190" y="405" width="389" height="264" key="MultipleFileMergeDialog" timestamp="1589458821693">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1190" y="405" width="389" height="264" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589458821693" />
+    <state x="180" y="115" key="SettingsEditor" timestamp="1589472041240">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="180" y="115" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1589472041240" />
     <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589471625059">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
