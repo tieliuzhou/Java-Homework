@@ -1,6 +1,7 @@
 package finalproject.client;
 
 import java.io.ObjectInputStream;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.sql.*;
 import java.util.Arrays;
@@ -98,8 +99,9 @@ public class ClientInterface extends JFrame {
 			try{
 				socket.close();
 				hostName.setText("<None>");
+				System.out.println("connection closed");
 			} catch (Exception e1){
-			e1.printStackTrace();
+				e1.printStackTrace();
 			}
 		});
 		sendData.addActionListener(new SendButtonListener());
@@ -277,11 +279,15 @@ public class ClientInterface extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				socket = new Socket(host, port);
-				hostName.setText(host +":"+port);
+				InetAddress inetAddress = socket.getInetAddress();
+				//System.out.println(inetAddress.getHostName());
+				hostName.setText(inetAddress.getHostName() +":"+port);
 				toServer = new ObjectOutputStream(socket.getOutputStream());
 				fromServer = new ObjectInputStream(socket.getInputStream());
+				System.out.println("connected");
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
+				System.out.println("connection failure");
 			}
 		}
 	}
@@ -311,21 +317,30 @@ public class ClientInterface extends JFrame {
 				toServer.writeObject(p);
 				toServer.flush();
 
-				//String response = br.readLine();
 				String response = null;
+				try {
+					response = br.readLine();
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				}
+
+				/*
 				try {
 					response = (String) fromServer.readObject();
 				} catch (ClassNotFoundException classNotFoundException) {
 					classNotFoundException.printStackTrace();
 				}
+				*/
+
 				if (response.contains("Success")) {
 					// what do you do after we know that the server has successfully
 					// received the data and written it to its own database?
 					// you will have to write the code for that.
 					try {
-						System.out.println("Success");
+						System.out.println("Successfully sent data");
 						updateStmt.setInt(1,p.getId());
 						updateStmt.executeUpdate();
+						System.out.println("Successfully updated data");
 						clearComboBox();
 						fillComboBox();
 					} catch (SQLException e1) {

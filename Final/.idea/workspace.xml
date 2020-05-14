@@ -19,33 +19,23 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/sqlite_jdbc_3_30_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Final.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FinalProjectDocument.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/db/DBInterface.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/entities/Person.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite-jdbc-3.30.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/finalproject/db/DBInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/finalproject/entities/Person.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/finalproject/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../FinalProject/src/finalproject/client/ClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../FinalProject/src/finalproject/client/ClientInterface.java" afterDir="false" />
+    <list default="true" id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="Final">
+      <change afterPath="$PROJECT_DIR$/~$nalProjectDocument.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FinalProjectDocument.docx" beforeDir="false" afterPath="$PROJECT_DIR$/FinalProjectDocument.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client.db" beforeDir="false" afterPath="$PROJECT_DIR$/client.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.db" beforeDir="false" afterPath="$PROJECT_DIR$/server.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/finalproject/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/finalproject/server/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +60,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../NetworkingLecture20200502-revised" />
   </component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.ClientInterface">
     <configuration name="ClientInterface" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="finalproject.client.ClientInterface" />
       <module name="Final" />
@@ -103,8 +93,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Server" />
         <item itemvalue="Application.ClientInterface" />
+        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
@@ -119,6 +109,21 @@
       <option name="presentableId" value="Default" />
       <updated>1589294774982</updated>
     </task>
+    <task id="LOCAL-00001" summary="Final">
+      <created>1589458925186</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589458925186</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Final">
+      <created>1589458942527</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1589458942527</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -131,39 +136,50 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Final" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final" />
   </component>
   <component name="WindowStateProjectService">
     <state x="828" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589296469148">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="828" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589296469148" />
+    <state x="988" y="188" key="#com.intellij.unscramble.UnscrambleDialog" timestamp="1589466937546">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="988" y="188" key="#com.intellij.unscramble.UnscrambleDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589466937546" />
     <state x="925" y="451" key="FileChooserDialogImpl" timestamp="1589296005781">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="925" y="451" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589296005781" />
-    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589385183363">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589469030299">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
-    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589385183363">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589469030299" />
+    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589469030299">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
-    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589385183363">
+    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589469030299" />
+    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589469030299">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
-    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589385183363">
+    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589469030299" />
+    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589469030299">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589385183363" />
-    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589294850269">
+    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589469030299" />
+    <state x="1190" y="405" width="389" height="264" key="MultipleFileMergeDialog" timestamp="1589458821693">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589294850269" />
+    <state x="1190" y="405" width="389" height="264" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589458821693" />
+    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589469575055">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="287" y="439" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589469575055" />
     <state x="1096" y="244" key="run.anything.popup" timestamp="1589295103337">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

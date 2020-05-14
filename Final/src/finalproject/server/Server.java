@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -60,6 +61,7 @@ public class Server extends JFrame {
 
 	private int port;
 	private Socket socket;
+	private String host;
 
 
 	public Server() throws IOException, SQLException {
@@ -72,6 +74,7 @@ public class Server extends JFrame {
 
 	public Server(int port, String dbFile) throws IOException, SQLException {
 
+		this.host = "localhost";
 		this.port = port;
 		this.setSize(Server.FRAME_WIDTH, Server.FRAME_HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,6 +110,8 @@ public class Server extends JFrame {
 							" at " + new Date() + '\n');
 
 					InetAddress inetAddress = socket.getInetAddress();
+					textQueryArea.append("Client " + clientNo + "'s host name is "
+							+ host + "\n");
 					textQueryArea.append("Client " + clientNo + "'s host name is "
 							+ inetAddress.getHostName() + "\n");
 					textQueryArea.append("Client " + clientNo + "'s IP Address is "
@@ -145,40 +150,53 @@ public class Server extends JFrame {
 
 		/** Run a thread */
 		public void run() {
-			try {
-				// Continuously serve the client
-				while (true) {
+			// Continuously serve the client
+			while (true) {
+				try {
+					// Create data output streams using OutputStream
+					OutputStream outputStream = socket.getOutputStream();
 					try {
 						Object object = inputFromClient.readObject();
 						Person p = (Person) object;
 						textQueryArea.append("got person " + p.toString() +
-								" from client " + clientNum +" inserting into db " + '\n');
+								" from client " + clientNum + " inserting into db " + '\n');
 
-						insertStmt.setString(1,p.getFirst());
-						insertStmt.setString(2,p.getLast());
-						insertStmt.setInt(3,p.getAge());
-						insertStmt.setString(4,p.getCity());
-						insertStmt.setInt(5,p.getId());
+						insertStmt.setString(1, p.getFirst());
+						insertStmt.setString(2, p.getLast());
+						insertStmt.setInt(3, p.getAge());
+						insertStmt.setString(4, p.getCity());
+						insertStmt.setInt(5, p.getId());
 						insertStmt.executeUpdate();
 
 						textQueryArea.append("Inserted successfully" + '\n');
 
 						// Send back to the client
-						String response = "Success"+"\n";
-						outputToClient.writeObject(response);
-						outputToClient.flush();
+						String response = "Success" + "\n";
+						/*outputToClient.writeObject(response);
+						outputToClient.flush();*/
+
+						outputStream.write(response.getBytes());
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
-					} catch (SQLException e1){
-						String response = "Failed"+"\n";
-						outputToClient.writeObject(response);
-						outputToClient.flush();
+						String response = "Failed" + "\n";
+						/*outputToClient.writeObject(response);
+						outputToClient.flush();*/
+						outputStream.write(response.getBytes());
+					} catch (SQLException e1) {
 						e1.printStackTrace();
+						String response = "Failed" + "\n";
+						/*outputToClient.writeObject(response);
+						outputToClient.flush();*/
+						outputStream.write(response.getBytes());
 					}
+				} catch (IOException e2){
+					//If there are IO errors, in the Streams or the Sockets,
+					// assume there is some kind of network problem
+					// and exit the thread by having a using a “break”
+					// inside the while loop.
+					e2.printStackTrace();
+					break;
 				}
-			}
-			catch(IOException ex) {
-				ex.printStackTrace();
 			}
 		}
 	}
@@ -277,7 +295,6 @@ public class Server extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
 		Server sv;
 		try {
 			sv = new Server("server.db");
