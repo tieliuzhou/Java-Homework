@@ -9,7 +9,8 @@ import java.util.List;
 import javax.swing.*;
 
 import finalproject.client.ClientInterface.ComboBoxItem;
-import finalproject.db.DBInterface;
+//import finalproject.db.DBInterface;
+//import finalproject.entities.Person;
 import finalproject.entities.Person;
 
 import java.awt.BorderLayout;
@@ -384,8 +385,9 @@ public class ClientInterface extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		ClientInterface ci = new ClientInterface();
-		ci.setVisible(true);
+		//ClientInterface ci = new ClientInterface();
+		//ci.setVisible(true);
+		System.out.println(1);
 	}
 
 
