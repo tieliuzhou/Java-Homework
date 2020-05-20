@@ -20,10 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e9f3580-ba7d-4ba8-8ea1-8eaf257a49c7" name="Default Changelist" comment="Final">
-      <change afterPath="$PROJECT_DIR$/readme.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client1.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/finalproject/client/ClientInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$nalProjectDocument.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client.db" beforeDir="false" afterPath="$PROJECT_DIR$/client.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$1OpenDBListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$ComboBoxItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$OCButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$QueryButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface$SendButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/client/ClientInterface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$HandleAClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server$QueryButtonListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Final/finalproject/server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.db" beforeDir="false" afterPath="$PROJECT_DIR$/server.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +60,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.ClientInterface">
     <configuration name="ClientInterface" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="finalproject.client.ClientInterface" />
       <module name="Final" />
@@ -84,8 +93,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Server" />
         <item itemvalue="Application.ClientInterface" />
+        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
@@ -128,7 +137,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589471633021</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Final">
+      <created>1589472298078</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1589472298078</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -161,22 +177,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="925" y="451" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589296005781" />
-    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589471643936">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom" timestamp="1589666919939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
-    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589471643936">
+    <state width="914" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919939" />
+    <state width="914" height="279" key="GridCell.Tab.0.center" timestamp="1589666919939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
-    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589471643936">
+    <state width="914" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919939" />
+    <state width="914" height="279" key="GridCell.Tab.0.left" timestamp="1589666919939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
-    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589471643936">
+    <state width="914" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919939" />
+    <state width="914" height="279" key="GridCell.Tab.0.right" timestamp="1589666919939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589471643936" />
+    <state width="914" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919939" />
+    <state width="914" height="344" key="GridCell.Tab.1.bottom" timestamp="1589666919933">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919933" />
+    <state width="914" height="344" key="GridCell.Tab.1.center" timestamp="1589666919932">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919932" />
+    <state width="914" height="344" key="GridCell.Tab.1.left" timestamp="1589666919932">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919932" />
+    <state width="914" height="344" key="GridCell.Tab.1.right" timestamp="1589666919932">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589666919932" />
     <state x="1190" y="405" width="389" height="264" key="MultipleFileMergeDialog" timestamp="1589458821693">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
